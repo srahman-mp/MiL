@@ -120,8 +120,27 @@ example : 2*a*b ≤ a^2 + b^2 := by
     _ ≥ 0 := by apply pow_two_nonneg
   linarith
 
+
+section
+
+theorem fact1 : a*b ≤ (a^2 + b^2)/2 := by
+  have h : 0 ≤ a^2 - 2*a*b + b^2
+  calc
+    a^2 - 2*a*b + b^2 = (a - b)^2 := by ring
+    _ ≥ 0 := by apply pow_two_nonneg
+  linarith
+
+theorem fact2 : -(a*b) ≤ (a^2 + b^2)/2 := by
+  have h : 0 ≤ a^2 + 2*a*b + b^2
+  calc
+    a^2 + 2*a*b + b^2 = (a + b)^2 := by ring
+    _ ≥ 0 := by apply pow_two_nonneg
+  linarith
+
 example : |a*b| ≤ (a^2 + b^2)/2 := by
-  sorry
+  refine abs_le'.mpr ⟨?_, ?_⟩
+  . exact fact1 a b
+  . exact fact2 a b
 
 #check abs_le'.mpr
-
+end
