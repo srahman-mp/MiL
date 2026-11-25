@@ -40,17 +40,20 @@ example : min a b = min b a := by
     apply min_le_left
 
 example : max a b = max b a := by
-  sorry
+  exact max_comm a b
 example : min (min a b) c = min a (min b c) := by
-  sorry
+  exact min_assoc a b c
+
 theorem aux : min a b + c ≤ min (a + c) (b + c) := by
-  sorry
+  apply le_min
+  . linarith [min_le_left a b]
+  . linarith [min_le_right a b]
 example : min a b + c = min (a + c) (b + c) := by
-  sorry
+  exact min_add a b c
 #check (abs_add_le : ∀ a b : ℝ, |a + b| ≤ |a| + |b|)
 
-example : |a| - |b| ≤ |a - b| :=
-  sorry
+example : |a| - |b| ≤ |a - b| := by
+  exact abs_sub_abs_le_abs_sub a b
 end
 
 section
@@ -67,7 +70,13 @@ example : x ∣ x ^ 2 := by
   apply dvd_mul_left
 
 example (h : x ∣ w) : x ∣ y * (x * z) + x ^ 2 + w ^ 2 := by
-  sorry
+  apply dvd_add
+  . apply dvd_add
+    refine Nat.dvd_mul_left_of_dvd ?_ y
+    apply dvd_mul_right
+    apply dvd_mul_left
+  rw[pow_two]
+  exact Nat.dvd_mul_left_of_dvd h w
 end
 
 section
@@ -79,7 +88,5 @@ variable (m n : ℕ)
 #check (Nat.lcm_zero_left n : Nat.lcm 0 n = 0)
 
 example : Nat.gcd m n = Nat.gcd n m := by
-  sorry
+  exact gcd_comm m n
 end
-
-
