@@ -36,23 +36,17 @@ variable (x y z : α)
 #check (le_sup_right : y ≤ x ⊔ y)
 #check (sup_le : x ≤ z → y ≤ z → x ⊔ y ≤ z)
 
-example : x ⊓ y = y ⊓ x := by
-  sorry
+example : x ⊓ y = y ⊓ x := inf_comm x y
 
-example : x ⊓ y ⊓ z = x ⊓ (y ⊓ z) := by
-  sorry
+example : x ⊓ y ⊓ z = x ⊓ (y ⊓ z) := inf_assoc x y z
 
-example : x ⊔ y = y ⊔ x := by
-  sorry
+example : x ⊔ y = y ⊔ x := sup_comm x y
 
-example : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := by
-  sorry
+example : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := sup_assoc x y z
 
-theorem absorb1 : x ⊓ (x ⊔ y) = x := by
-  sorry
+theorem absorb1 : x ⊓ (x ⊔ y) = x := inf_sup_self
 
-theorem absorb2 : x ⊔ x ⊓ y = x := by
-  sorry
+theorem absorb2 : x ⊔ x ⊓ y = x := sup_inf_self
 
 end
 
@@ -88,14 +82,13 @@ variable (a b c : R)
 #check (mul_nonneg : 0 ≤ a → 0 ≤ b → 0 ≤ a * b)
 
 example (h : a ≤ b) : 0 ≤ b - a := by
-  sorry
+  exact sub_nonneg_of_le h
 
 example (h: 0 ≤ b - a) : a ≤ b := by
-  sorry
+  exact le_of_sub_nonneg h
 
 example (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := by
-  sorry
-
+  exact MulPosMono.mul_le_mul_of_nonneg_right h' h
 end
 
 section
@@ -107,7 +100,12 @@ variable (x y z : X)
 #check (dist_triangle x y z : dist x z ≤ dist x y + dist y z)
 
 example (x y : X) : 0 ≤ dist x y := by
-  sorry
+  rw [← add_self_div_two (dist x y)]
+  nth_rw 2 [dist_comm]
+  refine div_nonneg ?_ ?_
+  . have h : dist x x ≤ dist x y + dist y x := by
+      apply dist_triangle x y x
+    linarith [dist_self x, h]
+  . norm_num
 
 end
-
